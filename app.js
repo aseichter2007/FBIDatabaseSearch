@@ -6,7 +6,7 @@ Build all of your functions for displaying and gathering information below (GUI)
 // app is the function called to start the entire application
 function app(people){
   let searchType = promptFor("Do you know the name of the person you are looking for? Enter 'yes' or 'no'", yesNo).toLowerCase();
-  let searchResults;
+  let searchResults=[];
   switch(searchType){
     case 'yes':
       searchResults = searchByName(people);
@@ -18,13 +18,14 @@ function app(people){
     app(people); // restart app
       break;
   }
-  if (Array.isArray(searchResults)) {
+  if (searchResults.length>1) {
     alert("multiple results:")
     displayPeople(searchResults)
-    app(people);
+   return app(people);
   }
+  let person = searchResults[0]
   // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
-  mainMenu(searchResults, people);
+  mainMenu(person, people);
 }
 
 // Menu function to call once you find who you are looking for
@@ -37,12 +38,12 @@ function mainMenu(person, people){
     return app(people); // restart
   }
 
-  let displayOption = prompt("Found " + person.firstName + " " + person.lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'",chars);
+  let displayOption = prompt("Found " + person["firstName"] + " " + person["lastName"] + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'",chars);
 
   
   switch(displayOption){
     case "info":
-    getPersonInfo();// TODO: get person's info
+    displayPerson();// TODO: get person's info
     break;
     case "family":
     getPersonFamily();// TODO: get person's family
@@ -63,21 +64,23 @@ function mainMenu(person, people){
 function searchByName(people){
   let firstName = promptFor("What is the person's first name?", chars);
   let lastName = promptFor("What is the person's last name?", chars);
-
-  let foundPerson = people.filter(function(person){
+  let foundPerson=[];
+   foundPerson =[ people.filter(function(person){
     if(person.firstName === firstName && person.lastName === lastName){
       return true;
     }
     else{
       return false;
     }
-  })
+  })]
   // TODO: find the person using the name they entered ? I think this part works. 
   return foundPerson;
 }
-  function searchByTraits(people,search=0){
+  function searchByTraits(people,search={}){
   let searchType = promptFor("Enter a trait to search for. Enter 'done' when finished.",chars)
-  search=getSearch(search);
+  //search=getSearch(search);
+  let flag = true
+  let matched;
   switch (searchType.toLowerCase()) {
     case "id":
       search["id"]=promptFor("What is the Id # you would like to search?", chars);
@@ -122,27 +125,32 @@ function searchByName(people){
       search["currentSpouse"]=promptFor("Who is the person's current spouse?", chars);
     break;
     case "done":
-    return actuallyDoTheSearch(people, search)
+    flag=false;
+    matched = actuallyDoTheSearch(people, search)
     break;
     default:
-    return searchByTraits(people,search);
+    break;
   }
-  searchByTraits(people, search);
+  
+  if (flag) {
+   return searchByTraits(people, search);
+  }
+  return matched;
 }
 function getSearch(search=0){
 if (search = 0) {
   let search = {
-    id:0,
-    firstName:0,
-    lastName:0,
-    gender:0,
-    dob:0,
-    height:0,
-    weight:0,
-    eyeColor:0,
-    occupation:0,
-    parents:0,
-    currentSpouse:0,
+    //id:0,
+    //firstName:0,
+    //lastName:0,
+    //gender:0,
+    //dob:0,
+    //height:0,
+    //weight:0,
+    //eyeColor:0,
+    //occupation:0,
+    //parents:0,
+    //currentSpouse:0,
     };
   }
   return search;  
@@ -150,9 +158,8 @@ if (search = 0) {
 function actuallyDoTheSearch(people, search){
   let matches=[];
   Object.keys(search).forEach(function (key) {
-        if (!search[key]===0) {
         let match= people.filter(function(person){
-          if (person[key]==search[key]) {
+          if (person[key].toLowerCase()==search[key].toLowerCase()) {
             return true;
           }
           else{
@@ -164,18 +171,9 @@ function actuallyDoTheSearch(people, search){
             matches.push(element)
           }
         });        
-      }   
-  });
-  // exampular code.
-  let foundPerson = people.filter(function(person){
-    if(person.firstName === firstName && person.lastName === lastName){
-      return true;
-    }
-    else{
-      return false;
-    }
-  return person;
-})
+       
+  });  
+  return matches;
 }
 
 
@@ -206,6 +204,11 @@ function displayPerson(person){
   alert(personInfo);
 }
 
+function getPersonFamily(person){
+  let personFamilyInfo = "Parents: " + person.parents + "\n";
+  personFamilyInfo += "currentSpouse: " + person.currentspouse + "\n";
+  alert(personFamilyInfo);
+}
 
 
 // function that prompts and validates user input
