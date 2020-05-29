@@ -228,12 +228,15 @@ function getPersonFamily(people,person){
     })
   })
   let siblings=[];
+  let spouse;
+
+
   let sibSearch = {"parents":[]};
   person["parents"].forEach(parent => 
     sibsearch["parents"].push(parent)
     )
   siblings= actuallyDoTheSearch(people, sibsearch); 
-  let spouse;
+  
   spouse = people.filter(function(spouse){
     if(spouse.id === person.currentSpouse){
       return true;
