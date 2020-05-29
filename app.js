@@ -38,18 +38,18 @@ function mainMenu(person, people){
     return app(people); // restart
   }
 
-  let displayOption = prompt("Found " + person["firstName"] + " " + person["lastName"] + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'",chars);
+  let displayOption = promptfor("Found " + person["firstName"] + " " + person["lastName"] + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'",chars);
 
   
   switch(displayOption){
     case "info":
-    displayPerson();// TODO: get person's info
+    displayPerson(person);// TODO: get person's info
     break;
     case "family":
-    getPersonFamily();// TODO: get person's family
+    getPersonFamily(people,person);// TODO: get person's family
     break;
     case "descendants":
-    getPersonDescendants();// TODO: get person's descendants
+    getPersonDescendants(people,person);// TODO: get person's descendants
     break;
     case "restart":
     app(people); // restart
@@ -73,24 +73,27 @@ function searchByName(people){
       return false;
     }
   })]
-  // TODO: find the person using the name they entered ? I think this part works. 
+  // TODO: find the person using the name they entered ? I think this part works as is. 
   return foundPerson;
 }
   function searchByTraits(people,search={}){
-  let searchType = promptFor("Enter a trait to search for. Enter 'done' when finished.",chars)
-  //search=getSearch(search);
+  let searchType = promptFor("Enter a trait to search for. Enter 'done' when finished.\n firstname, lastname, gender, date of birth, height, weight, eye color, occupaiton, parent id, spouse id",chars)
   let flag = true
   let matched;
   switch (searchType.toLowerCase()) {
     case "id":
+    case "i":
+    case "id#":
       search["id"]=promptFor("What is the Id # you would like to search?", chars);
     break;
     case "firstname":
     case "first name":
+    case "f":
       search["firstName"]=promptFor("What is the person's first name?", chars);
     break;
     case "lastname":
     case "last name":
+    case "l":
       search["lastName"]=promptFor("What is the person's last name?", chars);
     break;
     case "gender":
@@ -99,32 +102,50 @@ function searchByName(people){
     case "dob":
     case "date of birth":
     case "dateofbirth":
+    case "bday":
       search["dob"]=promptFor("What is the person's dob?", chars);
     break;
     case "height":
+    case "h":
       search["height"]=promptFor("What is the person's height in inches?", chars);
     break;
     case "weight":
+    case "w":
       search["weight"]=promptFor("What is the person's weight?", chars);
     break;
     case "eyecolor":
     case "eye color":
+    case "e":
       search["eyeColor"]=promptFor("What is the person's eye color?", chars);
     break;
     case "occupation":
+    case "job":
+    case "career":
+    case "o":
+    case "j":
       search["occupation"]=promptFor("What is the person's occupation?", chars);
     break;
     case "parents":
-      search["parents"]=promptFor("What is the person's parents?", chars);
+    case "parent":
+    case "father":
+    case "mother":
+    case "p":
+      search["parents"]=promptFor("What is the parent's id#?", chars);
     break;
+    case "s":
     case "spouse":
+    case "spouseid":
+    case "spouse id":
     case "husband":
     case "wife":
     case "currentspouse":
     case "current spouse":
-      search["currentSpouse"]=promptFor("Who is the person's current spouse?", chars);
+      search["currentSpouse"]=promptFor("Who is the current spouse's id#?", chars);
     break;
     case "done":
+    case "finished":
+    case "d":
+    case "end":
     flag=false;
     matched = actuallyDoTheSearch(people, search)
     break;
@@ -137,34 +158,27 @@ function searchByName(people){
   }
   return matched;
 }
-function getSearch(search=0){
-if (search = 0) {
-  let search = {
-    //id:0,
-    //firstName:0,
-    //lastName:0,
-    //gender:0,
-    //dob:0,
-    //height:0,
-    //weight:0,
-    //eyeColor:0,
-    //occupation:0,
-    //parents:0,
-    //currentSpouse:0,
-    };
-  }
-  return search;  
-}
 function actuallyDoTheSearch(people, search){
   let matches=[];
   Object.keys(search).forEach(function (key) {
         let match= people.filter(function(person){
+          if (key == "parents") {
+            person["parents"].forEach(function(parent){
+              if (search[key]==parent) {
+                return true;
+              } else {
+                return false;
+              }
+            })            
+          }
+          else{
           if (person[key].toLowerCase()==search[key].toLowerCase()) {
             return true;
           }
           else{
             return false;
           }
+        }
         })
         match.forEach(element => {          
           if (!matches.includes(element)) {
