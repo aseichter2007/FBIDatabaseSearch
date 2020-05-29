@@ -12,13 +12,17 @@ function app(people){
       searchResults = searchByName(people);
       break;
     case 'no':
-      // TODO: search by traits
+      searchResults = searchByTraits(people);
       break;
       default:
     app(people); // restart app
       break;
   }
-  
+  if (Array.isArray(searchResults)) {
+    alert("multiple results:")
+    displayPeople(searchResults)
+    app(people);
+  }
   // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
   mainMenu(searchResults, people);
 }
@@ -33,17 +37,18 @@ function mainMenu(person, people){
     return app(people); // restart
   }
 
-  let displayOption = prompt("Found " + person.firstName + " " + person.lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'");
+  let displayOption = prompt("Found " + person.firstName + " " + person.lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'",chars);
 
+  
   switch(displayOption){
     case "info":
-    // TODO: get person's info
+    getPersonInfo();// TODO: get person's info
     break;
     case "family":
-    // TODO: get person's family
+    getPersonFamily();// TODO: get person's family
     break;
     case "descendants":
-    // TODO: get person's descendants
+    getPersonDescendants();// TODO: get person's descendants
     break;
     case "restart":
     app(people); // restart
@@ -67,9 +72,112 @@ function searchByName(people){
       return false;
     }
   })
-  // TODO: find the person using the name they entered
+  // TODO: find the person using the name they entered ? I think this part works. 
   return foundPerson;
 }
+  function searchByTraits(people,search=0){
+  let searchType = promptFor("Enter a trait to search for. Enter 'done' when finished.",chars)
+  search=getSearch(search);
+  switch (searchType.toLowerCase()) {
+    case "id":
+      search["id"]=promptFor("What is the Id # you would like to search?", chars);
+    break;
+    case "firstname":
+    case "first name":
+      search["firstName"]=promptFor("What is the person's first name?", chars);
+    break;
+    case "lastname":
+    case "last name":
+      search["lastName"]=promptFor("What is the person's last name?", chars);
+    break;
+    case "gender":
+      search["gender"]=promptFor("What is the person's gender? There are only two genders.", chars);
+    break;
+    case "dob":
+    case "date of birth":
+    case "dateofbirth":
+      search["dob"]=promptFor("What is the person's dob?", chars);
+    break;
+    case "height":
+      search["height"]=promptFor("What is the person's height in inches?", chars);
+    break;
+    case "weight":
+      search["weight"]=promptFor("What is the person's weight?", chars);
+    break;
+    case "eyecolor":
+    case "eye color":
+      search["eyeColor"]=promptFor("What is the person's eye color?", chars);
+    break;
+    case "occupation":
+      search["occupation"]=promptFor("What is the person's occupation?", chars);
+    break;
+    case "parents":
+      search["parents"]=promptFor("What is the person's parents?", chars);
+    break;
+    case "spouse":
+    case "husband":
+    case "wife":
+    case "currentspouse":
+    case "current spouse":
+      search["currentSpouse"]=promptFor("Who is the person's current spouse?", chars);
+    break;
+    case "done":
+    return actuallyDoTheSearch(people, search)
+    break;
+    default:
+    return searchByTraits(people,search);
+  }
+  searchByTraits(people, search);
+}
+function getSearch(search=0){
+if (search = 0) {
+  let search = {
+    id:0,
+    firstName:0,
+    lastName:0,
+    gender:0,
+    dob:0,
+    height:0,
+    weight:0,
+    eyeColor:0,
+    occupation:0,
+    parents:0,
+    currentSpouse:0,
+    };
+  }
+  return search;  
+}
+function actuallyDoTheSearch(people, search){
+  let matches=[];
+  Object.keys(search).forEach(function (key) {
+        if (!search[key]===0) {
+        let match= people.filter(function(person){
+          if (person[key]==search[key]) {
+            return true;
+          }
+          else{
+            return false;
+          }
+        })
+        match.forEach(element => {          
+          if (!matches.includes(element)) {
+            matches.push(element)
+          }
+        });        
+      }   
+  });
+  // exampular code.
+  let foundPerson = people.filter(function(person){
+    if(person.firstName === firstName && person.lastName === lastName){
+      return true;
+    }
+    else{
+      return false;
+    }
+  return person;
+})
+}
+
 
 // alerts a list of people
 function displayPeople(people){
@@ -79,13 +187,26 @@ function displayPeople(people){
 }
 
 function displayPerson(person){
+  
   // print all of the information about a person:
   // height, weight, age, name, occupation, eye color.
   let personInfo = "First Name: " + person.firstName + "\n";
   personInfo += "Last Name: " + person.lastName + "\n";
+  personInfo += "Gender: " + person.gender + "\n";
+  personInfo += "DOB: " + person.dob + "\n";
+  personInfo += "Height: " + person.height + "\n";
+  personInfo += "Weight: " + person.weight + "\n";
+  personInfo += "Eye Color: " + person.eyecolor + "\n";
+  personInfo += "Occupation: " + person. occupation + "\n";
+  personInfo += "Parents: " + person.parents + "\n";
+  personInfo += "Current Spouse: " + person.currentspouse + "\n";
+  
+  
   // TODO: finish getting the rest of the information to display
   alert(personInfo);
 }
+
+
 
 // function that prompts and validates user input
 function promptFor(question, valid){
