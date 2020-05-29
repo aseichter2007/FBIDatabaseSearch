@@ -236,7 +236,7 @@ function getPersonFamily(people,person){
     sibsearch["parents"].push(parent)
     )
   siblings= actuallyDoTheSearch(people, sibsearch); 
-  
+
   spouse = people.filter(function(spouse){
     if(spouse.id === person.currentSpouse){
       return true;
@@ -245,27 +245,17 @@ function getPersonFamily(people,person){
       return false;
     }
   })
-  let parentSearch ={};
-  parentSearch["parents"].push(person["parents"])
   
-  let spouseSearch={};
-  spouseSearch["currentSpouse"]=person["currentSpouse"];
+  let personFamilyInfo="";
+  parents.forEach(parent => {
+    personFamilyInfo+= "Parents: " + parent.firstName + " " + parent.lastName +"\n";
+  })
+  siblings.forEach(sibling => {
+    personFamilyInfo += "Siblings: " + sibling.firstName + " " + sibling.firstName + "\n";
+  })
 
-
-  spouse= actuallyDoTheSearch();
-  
-             
-    
-
- 
-  //I like the initiative but not quite what theyre looking for. 
-  let personFamilyInfo = "Parents: " + person.parents + "\n";
-  personFamilyInfo += "currentSpouse: " + person.currentspouse + "\n";
+  personFamilyInfo += "currentSpouse: " + spouse.firstName + " " + spouse.lastName+ "\n";
   alert(personFamilyInfo);
-  
-  //we will use the displayperson() function to read out the family details. 
-displayPeople(parents);
-
 }
 function getPersonDescendants(people,person){
 let family=[];
