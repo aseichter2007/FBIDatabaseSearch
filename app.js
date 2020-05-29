@@ -76,7 +76,7 @@ function searchByName(people){
   // TODO: find the person using the name they entered ? I think this part works as is. 
   return foundPerson;
 }
-  function searchByTraits(people,search={}){
+  function searchByTraits(people,search={"parents":[]}){
   let searchType = promptFor("Enter a trait to search for. Enter 'done' when finished.\n firstname, lastname, gender, date of birth, height, weight, eye color, occupaiton, parent id, spouse id",chars)
   let flag = true
   let matched;
@@ -217,11 +217,64 @@ function displayPerson(person){
   // TODO: finish getting the rest of the information to display
   alert(personInfo);
 }
+function getPersonFamily(people,person){
+  let parents= people.filter(function(parent){  
+    person["parents"].forEach(function(parentid){
+      if (parent["id"]==parentid) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+  })
+  let siblings=[];
+  let sibSearch = {"parents":[]};
+  person["parents"].forEach(parent => 
+    sibsearch["parents"].push(parent)
+    )
+  siblings= actuallyDoTheSearch(people, sibsearch); 
+  let spouse;
+  spouse = people.filter(function(spouse){
+    if(spouse.id === person.currentSpouse){
+      return true;
+    }
+    else{
+      return false;
+    }
+  })
+  let parentSearch ={};
+  parentSearch["parents"].push(person["parents"])
+  
+  let spouseSearch={};
+  spouseSearch["currentSpouse"]=person["currentSpouse"];
 
-function getPersonFamily(person){
+
+  spouse= actuallyDoTheSearch();
+  
+             
+    
+
+ 
+  //I like the initiative but not quite what theyre looking for. 
   let personFamilyInfo = "Parents: " + person.parents + "\n";
   personFamilyInfo += "currentSpouse: " + person.currentspouse + "\n";
   alert(personFamilyInfo);
+  
+  //we will use the displayperson() function to read out the family details. 
+displayPeople(parents);
+
+}
+function getPersonDescendants(people,person){
+let family=[];
+let search= {parents:[]};
+search["parents"].push(person["id"])
+family = actuallyDoTheSearch(people, search);
+//we will use the displayperson() function to read out the children details.
+displayPeople(family);
+family.forEach(function(member){ //foreach(member => displayperson())
+  displayPerson(member);
+  getPersonDescendants(people, member)
+});
 }
 
 
