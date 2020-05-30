@@ -23,7 +23,8 @@ function app(people){
     displayPeople(searchResults)
    return app(people);
   }
-  let person = searchResults[0]
+  let person = searchResults[0];
+
   // Call the mainMenu function ONLY after you find the SINGLE person you are looking for
   mainMenu(person, people);
 }
@@ -33,12 +34,12 @@ function mainMenu(person, people){
 
   /* Here we pass in the entire person object that we found in our search, as well as the entire original dataset of people. We need people in order to find descendants and other information that the user may want. */
 
-  if(!person){
+  if(person==undefined){
     alert("Could not find that individual.");
     return app(people); // restart
   }
 
-  let displayOption = promptfor("Found " + person["firstName"] + " " + person["lastName"] + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'",chars);
+  let displayOption = promptFor("Found " + person["firstName"] + " " + person["lastName"] + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'",chars);
 
   
   switch(displayOption){
@@ -65,18 +66,18 @@ function searchByName(people){
   let firstName = promptFor("What is the person's first name?", chars);
   let lastName = promptFor("What is the person's last name?", chars);
   let foundPerson=[];
-   foundPerson =[ people.filter(function(person){
+   foundPerson=(people.filter(function(person){
     if(person.firstName === firstName && person.lastName === lastName){
       return true;
     }
     else{
       return false;
     }
-  })]
+  }))
   // TODO: find the person using the name they entered ? I think this part works as is. 
   return foundPerson;
 }
-  function searchByTraits(people,search={"parents":[]}){
+  function searchByTraits(people,search={}){
   let searchType = promptFor("Enter a trait to search for. Enter 'done' when finished.\n firstname, lastname, gender, date of birth, height, weight, eye color, occupaiton, parent id, spouse id",chars)
   let flag = true
   let matched;
@@ -130,7 +131,8 @@ function searchByName(people){
     case "father":
     case "mother":
     case "p":
-      search["parents"]=promptFor("What is the parent's id#?", chars);
+      search["parents"]=[]
+      search["parents"].push(promptFor("What is the parent's id#?", chars));
     break;
     case "s":
     case "spouse":
@@ -161,25 +163,38 @@ function searchByName(people){
 function actuallyDoTheSearch(people, search){
   let matches=[];
   Object.keys(search).forEach(function (key) {
-        let match= people.filter(function(person){
-          if (key == "parents") {
-            person["parents"].forEach(function(parent){
-              if (search[key]==parent) {
+        let match=[];
+        if (key != "parents") {
+          
+          match= people.filter(function(person){
+            if (key == "id"||key=="height"||key=="weight"||key=="currentSpouse") {
+              if (person[key]==search[key]) {
                 return true;
-              } else {
+              }
+              else{
                 return false;
               }
-            })            
-          }
-          else{
-          if (person[key].toLowerCase()==search[key].toLowerCase()) {
-            return true;
-          }
-          else{
-            return false;
-          }
+            } else {
+              if (person[key].toLowerCase()==search[key].toLowerCase()) {
+                return true;
+              }
+              else{
+                return false;
+              }
+            }
+          })
         }
-        })
+        else{
+          search.parents.forEach(parent => {
+            people.forEach(human=>{
+              if (parent == human.id) {
+                match.push(human);
+              }
+            })
+          })
+
+
+        }
         match.forEach(element => {          
           if (!matches.includes(element)) {
             matches.push(element)
