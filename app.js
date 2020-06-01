@@ -187,9 +187,11 @@ function actuallyDoTheSearch(people, search){
         else{
           search.parents.forEach(parent => {
             people.forEach(human=>{
-              if (parent == human.id) {
-                match.push(human);
-              }
+              human["parents"].forEach(parentid=>{                
+                if (parentid == parent) {
+                  match.push(human);
+                }
+              })              
             })
           })
 
