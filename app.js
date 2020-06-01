@@ -232,9 +232,8 @@ function displayPerson(person){
   
   
   // TODO: finish getting the rest of the information to display
-  //alert(personInfo); 
-  populatePage(person);
-  populateImage(person);
+  alert(personInfo); 
+  
 }
 function getPersonFamily(people,person){
 let parents= [];
@@ -349,4 +348,64 @@ else{
 imageUrl=women[random]
 }
   document.getElementById("picture").src=imageUrl;
+}
+
+function infoBoxSearch(people){
+let search={}
+let id=document.getElementById("fID").value;
+let firstName=document.getElementById("fname").value;
+let lastName=document.getElementById("flastname").value;
+let gender=document.getElementById("fgender").value;
+let dob=document.getElementById("fdob").value;
+let height=document.getElementById("fheight").value;
+let weight=document.getElementById("fweight").value;
+let eyecolor=document.getElementById("feyecolor").value;
+let occupation=document.getElementById("foccupation").value;
+let parentid=document.getElementById("fparentid").value;
+let currentspouse=document.getElementById("fcurrentspouse").value;
+
+if(id!=""){
+  search["id"]=id;
+}
+if(firstName!=""){
+  search["firstName"]=firstName;
+}
+if(lastName!=""){
+  search["lastName"]=lastName;
+}
+if(gender!=""){
+  search["gender"]=gender;
+}
+if(dob!=""){
+  search["dob"]=dob;
+}
+if(height!=""){
+  search["height"]=height;
+}
+if(weight!=""){
+  search["weight"]=weight;
+}
+if(eyecolor!=""){
+  search["eyeColor"]=eyecolor;
+}
+if(occupation!=""){
+  search["occupation"]=occupation;
+}
+if(parentid!=""){
+  search["parentid"]=parents;
+}
+if(currentspouse!=""){
+  search["currentSpouse"]=currentspouse;
+}
+
+let person=actuallyDoTheSearch(people, search);
+if(person.length>1){
+  return displayPeople(person);
+}
+populatePage(person[0]);
+populateImage(person[0]);
+document.getElementById("entrybox").classList.remove("show");
+document.getElementById("entrybox").classList.add("noshow");
+document.getElementById("descriptionbox").classList.remove("noshow");
+document.getElementById("descriptionbox").classList.add("show");
 }

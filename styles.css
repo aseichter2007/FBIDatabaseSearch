@@ -41,3 +41,11 @@ background-color: blue;
     width: 100%;
 }
 
+.show{
+    display: block;
+}
+
+.noshow{
+    display: none;
+}
+
