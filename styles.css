@@ -1,0 +1,43 @@
+.blue{
+background-color: blue;
+}
+
+.red{
+    background-color: red;
+}
+
+.green{
+    background-color: green;
+}
+
+.yellow{
+    background-color: yellow;
+}
+
+.mainbody{
+    background-color: white;
+    width: 100%;
+    max-width: 1000px;
+    height: 100%;
+    border: black;
+    border-style: solid;
+    border-radius: 3px;
+    margin: 0 auto;
+}
+.picturebox{
+    display: block;
+}
+
+.descriptionbox{
+    display: block;
+}
+
+.bottomhalf{
+    display: block;
+}
+
+.maximum{
+    height: 100%;
+    width: 100%;
+}
+

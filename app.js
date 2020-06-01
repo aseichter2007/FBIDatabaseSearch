@@ -232,27 +232,38 @@ function displayPerson(person){
   
   
   // TODO: finish getting the rest of the information to display
-  alert(personInfo);
+  //alert(personInfo); 
+  populatePage(person);
+  populateImage(person);
 }
 function getPersonFamily(people,person){
-  let parents= people.filter(function(parent){  
-    person["parents"].forEach(function(parentid){
-      if (parent["id"]==parentid) {
-        return true;
-      } else {
-        return false;
-      }
-    })
+let parents= [];
+person["parents"].forEach(function(parentid){
+ let parentsOfPerson=people.filter(function(parent){
+    if (parent["id"]==parentid) {
+      return true;
+    } else {
+      return false;
+    }
   })
+  parentsOfPerson.forEach(function(theParentOfPerson){
+    parents.push(theParentOfPerson)
+  })
+})
+ 
+
+
+
   let siblings=[];
   let spouse;
 
 
   let sibSearch = {"parents":[]};
-  person["parents"].forEach(parent => 
-    sibsearch["parents"].push(parent)
-    )
-  siblings= actuallyDoTheSearch(people, sibsearch); 
+  person["parents"].forEach(parent => {
+
+    sibSearch["parents"].push(parent)
+  })
+  siblings= actuallyDoTheSearch(people, sibSearch); 
 
   spouse = people.filter(function(spouse){
     if(spouse.id === person.currentSpouse){
@@ -268,10 +279,14 @@ function getPersonFamily(people,person){
     personFamilyInfo+= "Parents: " + parent.firstName + " " + parent.lastName +"\n";
   })
   siblings.forEach(sibling => {
-    personFamilyInfo += "Siblings: " + sibling.firstName + " " + sibling.firstName + "\n";
+    personFamilyInfo += "Siblings: " + sibling.firstName + " " + sibling.lastName + "\n";
   })
 
-  personFamilyInfo += "currentSpouse: " + spouse.firstName + " " + spouse.lastName+ "\n";
+  spouse.forEach(spouseInfo => {
+
+    personFamilyInfo += "Current Spouse: " + spouseInfo.firstName + " " + spouseInfo.lastName+ "\n";
+  })
+
   alert(personFamilyInfo);
 }
 function getPersonDescendants(people,person){
@@ -304,4 +319,34 @@ function yesNo(input){
 // helper function to pass in as default promptFor validation
 function chars(input){
   return true; // default validation only
+}
+
+function populatePage(person){
+document.getElementById("identifier").innerHTML="ID Number: " + person.id;
+document.getElementById("firstname").innerHTML="First Name: " + person.firstName;
+document.getElementById("lastname").innerHTML="Last Name: " + person.lastName;
+document.getElementById("gender").innerHTML="Gender: " + person.gender;
+document.getElementById("dob").innerHTML="Date of Birth: " + person.dob;
+document.getElementById("height").innerHTML="Height: " + person.height;
+document.getElementById("weight").innerHTML="Weight: " + person.weight;
+document.getElementById("eyecolor").innerHTML="Eye Color: " + person.eyeColor;
+document.getElementById("occupation").innerHTML="Occupation: " + person.occupation;
+document.getElementById("parentid").innerHTML="Parent ID: " + person.parentid;
+document.getElementById("currentspouse").innerHTML="Current Spouse: " + person.currentSpouse;
+
+}
+
+function populateImage(person){
+var men=["male1.jpg","male2.jpg","male3.jpg"];
+var women=["female1.jpg","female2.jpg","female3.jpg"];
+
+var random=Math.floor(Math.random()*men.length);
+let imageUrl;
+if(person.gender=="male"){
+  imageUrl=men[random]
+}
+else{
+imageUrl=women[random]
+}
+  document.getElementById("picture").src=imageUrl;
 }
