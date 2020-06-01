@@ -183,7 +183,7 @@ function actuallyDoTheSearch(people, search){
               }
             }
           })
-        }
+        } 
         else{
           search.parents.forEach(parent => {
             people.forEach(human=>{
