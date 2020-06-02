@@ -444,4 +444,5 @@ document.getElementById("entrybox").classList.remove("show");
 document.getElementById("entrybox").classList.add("noshow");
 document.getElementById("descriptionbox").classList.remove("noshow");
 document.getElementById("descriptionbox").classList.add("show");
+mainMenu(person);
 }
