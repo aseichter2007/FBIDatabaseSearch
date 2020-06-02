@@ -162,6 +162,8 @@ function searchByName(people){
 }
 function actuallyDoTheSearch(people, search){
   let matches=[];
+  let positivematches=[];
+  let possiblematches = {};
   Object.keys(search).forEach(function (key) {
         let match=[];
         if (key != "parents") {
@@ -194,19 +196,53 @@ function actuallyDoTheSearch(people, search){
               })              
             })
           })
-
-
         }
-        match.forEach(element => {          
-          if (!matches.includes(element)) {
-            matches.push(element)
-          }
-        });        
-       
+
+
+        //match.forEach(element => {          
+        //  if (!matches.includes(element)) {
+        //    matches.push(element);
+        //  }
+        //});   
+
+        possiblematches[key]=match;
   });  
+  possiblematches = searchResultReductor(possiblematches,search)
+  Object.keys(search).forEach(key=>{
+  possiblematches[key].forEach(element => {          
+    if (!matches.includes(element)) {
+      matches.push(element);
+    }
+  }); 
+})
+
   return matches;
 }
+function searchResultReductor(searchmatches, search){
+  let startmatches = JSON.parse(JSON.stringify(searchmatches));
 
+  Object.keys(search).forEach(key=> {
+    Object.keys(search).forEach(deepkey=> {
+      searchmatches[key].forEach(match=> {
+        if (!searchmatches[deepkey].includes(match)) {
+          searchmatches[key].pop(match); 
+        }
+      })
+    })
+  })
+  let changed = false;
+  Object.keys(search).forEach(key=> {
+    if (searchmatches[key].length != startmatches[key].length) {
+      if (changed==false) {
+        changed = true;
+      }
+    }
+  })
+  if (changed) {
+  searchmatches = searchResultReductor(searchmatches,search);  
+  }
+  return searchmatches;
+}
 
 // alerts a list of people
 function displayPeople(people){
