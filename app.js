@@ -219,17 +219,37 @@ function actuallyDoTheSearch(people, search){
   return matches;
 }
 function searchResultReductor(searchmatches, search){
-  let startmatches = JSON.parse(JSON.stringify(searchmatches));
-
+  let startmatches = JSON.parse(JSON.stringify(searchmatches));//store incomin search in new memory for comparison
+  let removeme={};
   Object.keys(search).forEach(key=> {
-    Object.keys(search).forEach(deepkey=> {
-      searchmatches[key].forEach(match=> {
-        if (!searchmatches[deepkey].includes(match)) {
-          searchmatches[key].pop(match); 
-        }
-      })
+    removeme[key]=[]
+  })
+  //find objects that are not in all searches
+  Object.keys(search).forEach(key=> {//each collection key of search
+    Object.keys(search).forEach(deepkey=> {//other collection key of search
+      if (key != deepkey) {//if not same collection
+        searchmatches[key].forEach(match=> {//each element of search
+          if (!searchmatches[deepkey].includes(match)) {//if match not in deepkey collection
+            removeme[key].push(match); //stage match for removal
+          }
+        })        
+      }
     })
   })
+  //remove non-matching objects from each category 
+  Object.keys(search).forEach(key=> {//each key
+    removeme[key].forEach(match=> {//each match
+      searchmatches[key] = searchmatches[key].filter(item=>{
+        if (match===item) {
+          return false;
+        }
+        else{
+          return true;
+        }
+      });//remove match from collection
+    })
+  })
+//check if changes hapened, because not all needed elements are being removed
   let changed = false;
   Object.keys(search).forEach(key=> {
     if (searchmatches[key].length != startmatches[key].length) {
@@ -437,6 +457,9 @@ if(currentspouse!=""){
 let person=actuallyDoTheSearch(people, search);
 if(person.length>1){
   return displayPeople(person);
+}
+if (person.length<1) {
+  return alert("no results found.")
 }
 populatePage(person[0]);
 populateImage(person[0]);
